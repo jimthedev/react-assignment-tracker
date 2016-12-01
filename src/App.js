@@ -13,11 +13,13 @@ class App extends Component {
   }
   onNewItemFormSubmit(e) {
     e.preventDefault();
-    var newItemValue = this.state.assignments.slice(0).concat([this.state.newItemValue]);
+    const newAssignments = this.state.assignments.slice(0).concat([this.state.newItemValue]);
     this.setState({
-      assignments: newItemValue,
+      assignments: newAssignments,
       newItemValue: ''
     });
+    // Stores some items
+    localStorage.setItem('assignmenttracker:assignments', JSON.stringify(newAssignments));
   }
   onNewItemValueChanged(e) {
     this.setState({
@@ -36,6 +38,7 @@ class App extends Component {
     this.setState({
       assignments: newAssignments
     });
+    localStorage.setItem('assignmenttracker:assignments', JSON.stringify(newAssignments));
   }
   render() {
     return (
