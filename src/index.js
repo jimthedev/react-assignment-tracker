@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import moment from 'moment';
+import uuid from 'uuid/v4';
 import './index.css';
 
 let lastSeen = JSON.parse(localStorage.getItem('assignmenttracker:lastseen'));
@@ -15,6 +16,24 @@ if(!assignments || assignments.length===0 || (numDaysBetween && numDaysBetween <
     'Create react app ',
     'Forget jquery',
     'Prepare for presentation'
+  ];
+
+  //
+
+  assignments = [
+    {
+      text: 'Create react app',
+      completed: false,
+      id: uuid()
+    }, {
+      text: 'Forget jquery',
+      completed: false,
+      id: uuid()
+    }, {
+      text: 'Prepare for presentation',
+      completed: false,
+      id: uuid()
+    }
   ];
 }
 

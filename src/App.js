@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import logo from './pencil.svg';
 import './App.css';
 import List from './List';
+import uuid from 'uuid/v4';
 
 class App extends Component {
   constructor(props) {
@@ -13,7 +14,11 @@ class App extends Component {
   }
   onNewItemFormSubmit(e) {
     e.preventDefault();
-    const newAssignments = this.state.assignments.slice(0).concat([this.state.newItemValue]);
+    const newAssignments = this.state.assignments.slice(0).concat([{
+      text: this.state.newItemValue,
+      completed: false,
+      id: uuid()
+    }]);
     this.setState({
       assignments: newAssignments,
       newItemValue: ''
@@ -26,14 +31,34 @@ class App extends Component {
       newItemValue: e.target.value
     })
   }
-  onItemClick(index, e) {
+  onItemCompleteClick(id, e) {
+    console.log('You completed item with id ', id);
+    var newAssignments = this.state.assignments.slice(0).map((item)=>{
+      if(item.id === id) {
+        return Object.assign(item, {
+          completed: !item.completed
+        })
+      } else {
+        return item;
+      }
+    });
 
-    // Determine which items to keep
-    var head = this.state.assignments.slice(0, index);
-    var tail = this.state.assignments.slice(index+1);
+    this.setState({
+      assignments: newAssignments
+    });
+    localStorage.setItem('assignmenttracker:assignments', JSON.stringify(newAssignments));
+  }
+  onItemDeleteClick(id, e) {
 
-    // Join the items we're keeping in an array
-    var newAssignments = head.concat(tail);
+    // // Determine which items to keep
+    // var head = this.state.assignments.slice(0, index);
+    // var tail = this.state.assignments.slice(index+1);
+    //
+    // // Join the items we're keeping in an array
+    // var newAssignments = head.concat(tail);
+    var newAssignments = this.state.assignments.filter((item) => {
+      return item.id !== id;
+    });
 
     this.setState({
       assignments: newAssignments
@@ -56,7 +81,11 @@ class App extends Component {
             placeholder="Record an assignment..."
             onChange={this.onNewItemValueChanged.bind(this)} />
         </form>
-        <List items={this.state.assignments} onItemClick={this.onItemClick.bind(this)} />
+        <List
+          items={this.state.assignments}
+          onItemDeleteClick={this.onItemDeleteClick.bind(this)}
+          onItemCompleteClick={this.onItemCompleteClick.bind(this)}
+          />
       </div>
     );
   }
